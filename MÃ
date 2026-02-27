@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EthosAI - Advanced Digital Ethics Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* =========================================
+           1. CORE VARIABLES & THEME CONFIGURATION
+           ========================================= */
+        :root {
+            /* Light Theme Palette */
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --bg-body: #f3f4f6;
+            --bg-glass: rgba(255, 255, 255, 0.75);
+            --bg-glass-strong: rgba(255, 255, 255, 0.95);
+            --bg-card: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border-color: rgba(229, 231, 235, 0.8);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+            
+            /* Semantic Colors */
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            
+            /* Dimensions */
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-full: 9999px;
+            
+            /* Transitions */
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-glass: rgba(30, 41, 59, 0.75);
+            --bg-glass-strong: rgba(30, 41, 59, 0.95);
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(51, 65, 85, 0.8);
+            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+        }
+
+        /* =========================================
+           2. GLOBAL RESET & TYPOGRAPHY
+           ========================================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background var(--transition-normal), color var(--transition-normal);
+            position: relative;
+        }
+
+        /* Animated Background Mesh */
+        .bg-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: var(--bg-body);
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #6366f1; animation-delay: 0s; }
+        .blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: #a855f7; animation-delay: -2s; }
+        .blob-3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: #ec4899; animation-delay: -4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(20px, -20px); }
+        }
+
+        /* =========================================
+           3. UI COMPONENTS (GLASSMORPHISM)
+           ========================================= */
+        .glass-panel {
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition-fast);
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-glass-strong);
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: border var(--transition-fast);
+        }
+
+        .input-field:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* =========================================
+           4. LAYOUT & NAVIGATION
+           ========================================= */
+        .app-layout {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-item {
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--bg-glass-strong);
+            color: var(--text-main);
+        }
+
+        .lang-select {
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: var(--bg-glass-strong);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* =========================================
+           5. AI COMPANION CHARACTER
+           ========================================= */
+        .character-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 160px;
+            height: 160px;
+            z-index: 90;
+            pointer-events: none; /* Let clicks pass through unless on character */
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .character-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
+            animation: breathe 4s infinite ease-in-out;
+        }
+
+        .character-bubble {
+            position: absolute;
+            top: -60px;
+            right: 0;
+            background: var(--bg-card);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            border-bottom-right-radius: 2px;
+            box-shadow: var(--shadow-lg);
+            font-size: 0.85rem;
+            color: var(--text-main);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            max-width: 200px;
+            pointer-events: auto;
+        }
+
+        .character-bubble.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1) translateY(0); }
+            50% { transform: scale(1.02) translateY(-5px); }
+        }
+
+        /* Character States */
+        .char-idle { filter: hue-rotate(0deg); }
+        .char-happy { filter: hue-rotate(-20deg) brightness(1.1); animation: bounce 1s infinite; }
+        .char-concern { filter: grayscale(0.3) hue-rotate(20deg); }
+        .char-serious { filter: contrast(1.2) sepia(0.2); }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* =========================================
+           6. PAGE SECTIONS
+           ========================================= */
+        .page-content {
+            padding-top: 100px;
+            padding-bottom: 60px;
+            min-height: 100vh;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .page-content.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- HOME PAGE --- */
+        .hero-section {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 60px;
+        }
+
+        /* --- CHAT PAGE --- */
+        .chat-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+            height: calc(100vh - 140px);
+            margin-top: 20px;
+        }
+
+        .chat-window {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            scroll-behavior: smooth;
+        }
+
+        .message-row {
+            display: flex;
+            gap: 12px;
+            max-width: 80%;
+            animation: slideUp 0.3s ease;
+        }
+
+        .message-row.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-bubble {
+            padding: 14px 20px;
+            border-radius: 18px;
+            font-size: 1rem;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .message-row.ai .message-bubble {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-top-left-radius: 4px;
+            color: var(--text-main);
+        }
+
+        .message-row.user .message-bubble {
+            background: var(--primary-gradient);
+            color: white;
+            border-top-right-radius: 4px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border-radius: 18px;
+            width: fit-content;
+            margin-bottom: 10px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: bounceDot 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounceDot {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            background: var(--bg-glass-strong);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+        }
+
+        /* --- ANALYSIS PANEL --- */
+        .analysis-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .score-card {
+            background: var(--bg-card);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .score-card.low { border-left-color: var(--success); }
+        .score-card.medium { border-left-color: var(--warning); }
+        .score-card.high { border-left-color: var(--danger); }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .feedback-section {
+            margin-top: auto;
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 16px;
+            border-radius: var(--radius-md);
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            color: #6366f1;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- DASHBOARD --- */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: var(--bg-card);
+            padding: 24px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            padding: 24px;
+            border-radius: var(--radius-md);
+            height: 400px;
+            position: relative;
+        }
+
+        /* --- STORY GRID --- */
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .story-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .story-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .story-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .story-body {
+            padding: 20px;
+        }
+
+        .story-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(99, 102, 241, 0.1);
+            color: #6366f1;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            max-width: 600px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .modal-overlay.open .modal-content {
+            transform: scale(1);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .chat-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            .analysis-panel {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+            .character-container {
+                width: 100px;
+                height: 100px;
+                bottom: 10px;
+                right: 10px;
+            }
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Animation -->
+    <div class="bg-mesh">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar glass-panel" style="border-radius: 0; border-left: none; border-right: none;">
+        <div class="logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+            EthosAI
+        </div>
+        <div class="nav-controls">
+            <div class="nav-links">
+                <a class="nav-item active" onclick="app.router('home')" data-i18n="nav_home">Home</a>
+                <a class="nav-item" onclick="app.router('chat')" data-i18n="nav_chat">Chat</a>
+                <a class="nav-item" onclick="app.router('story')" data-i18n="nav_story">Stories</a>
+                <a class="nav-item" onclick="app.router('dashboard')" data-i18n="nav_dashboard">Dashboard</a>
+            </div>
+            <select class="lang-select" id="langSelector" onchange="app.setLanguage(this.value)">
+                <!-- Options populated by JS -->
+            </select>
+            <button class="btn btn-secondary" onclick="app.toggleTheme()" style="padding: 8px 12px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="app-layout">
+        
+        <!-- HOME PAGE -->
+        <div id="page-home" class="page-content active">
+            <div class="container">
+                <div class="hero-section">
+                    <h1 class="hero-title" data-i18n="hero_title">Master Digital Empathy & Ethics</h1>
+                    <p class="hero-subtitle" data-i18n="hero_subtitle">An AI-powered companion to help you navigate online conflicts, improve emotional intelligence, and communicate with respect.</p>
+                    <button class="btn btn-primary" onclick="app.router('chat')" data-i18n="btn_start">Start Training</button>
+                </div>
+
+                <div class="features-grid">
+                    <div class="glass-card">
+                        <div style="font-size: 2rem; margin-bottom: 16px;">🧠</div>
+                        <h3 data-i18n="feat_ai_title">AI Analysis</h3>
+                        <p style="color: var(--text-muted); margin-top: 8px;" data-i18n="feat_ai_desc">Real-time feedback on your sentiment and moral alignment.</p>
+                    </div>
+                    <div class="glass-card">
+                        <div style="font-size: 2rem; margin-bottom: 16px;">🎙️</div>
+                        <h3 data-i18n="feat_voice_title">Voice Mode</h3>
+                        <p style="color: var(--text-muted); margin-top: 8px;" data-i18n="feat_voice_desc">Practice tone and inflection with speech-to-text integration.</p>
+                    </div>
+                    <div class="glass-card">
+                        <div style="font-size: 2rem; margin-bottom: 16px;">📚</div>
+                        <h3 data-i18n="feat_story_title">Story Scenarios</h3>
+                        <p style="color: var(--text-muted); margin-top: 8px;" data-i18n="feat_story_desc">Interactive scenarios about cyberbullying and conflict.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAT PAGE -->
+        <div id="page-chat" class="page-content">
+            <div class="container">
+                <div class="chat-layout">
+                    <!-- Chat Window -->
+                    <div class="glass-panel chat-window">
+                        <div class="chat-messages" id="chatMessages">
+                            <!-- Messages injected here -->
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chatInput" class="input-field" placeholder="Type a message..." onkeypress="chat.handleEnter(event)">
+                            <button class="btn btn-primary" onclick="chat.sendMessage()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Panel -->
+                    <div class="analysis-panel" id="analysisPanel">
+                        <div class="score-card" id="cardEmotion">
+                            <div class="score-header">
+                                <span data-i18n="score_emotion">Emotion</span>
+                                <span id="valEmotion">-</span>
+                            </div>
+                        </div>
+                        <div class="score-card" id="cardSentiment">
+                            <div class="score-header">
+                                <span data-i18n="score_sentiment">Sentiment</span>
+                                <span id="valSentiment">-</span>
+                            </div>
+                        </div>
+                        <div class="score-card" id="cardComm">
+                            <div class="score-header">
+                                <span data-i18n="score_comm">Communication</span>
+                                <span id="valComm">-</span>
+                            </div>
+                        </div>
+                        <div class="score-card" id="cardMoral">
+                            <div class="score-header">
+                                <span data-i18n="score_moral">Moral Align</span>
+                                <span id="valMoral">-</span>
+                            </div>
+                        </div>
+                        <div class="score-card" id="cardRisk">
+                            <div class="score-header">
+                                <span data-i18n="score_risk">Risk Level</span>
+                                <span id="valRisk" style="font-weight: 800;">-</span>
+                            </div>
+                        </div>
+
+                        <div class="feedback-section">
+                            <div class="feedback-title">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                <span data-i18n="feedback_title">AI Insight</span>
+                            </div>
+                            <p id="feedbackText" style="font-size: 0.9rem; line-height: 1.5; color: var(--text-muted);">
+                                Waiting for input...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STORY PAGE -->
+        <div id="page-story" class="page-content">
+            <div class="container">
+                <h2 style="margin-bottom: 30px;" data-i18n="story_title">Ethical Scenarios</h2>
+                <div class="story-grid" id="storyGrid">
+                    <!-- Cards injected by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD PAGE -->
+        <div id="page-dashboard" class="page-content">
+            <div class="container">
+                <h2 style="margin-bottom: 30px;" data-i18n="dash_title">Your Progress</h2>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="statSessions">0</div>
+                        <div data-i18n="dash_sessions">Total Sessions</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="statAvg">0.0</div>
+                        <div data-i18n="dash_avg">Avg Score</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="statStreak">0</div>
+                        <div data-i18n="dash_streak">Day Streak</div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- AI Character -->
+    <div class="character-container" id="characterContainer">
+        <div class="character-bubble" id="charBubble">Hello! I'm Aura.</div>
+        <img src="https://image.pollinations.ai/prompt/cute%20friendly%203d%20robot%20girl%20companion%20character%20blue%20and%20white%20color%20scheme%20educational%20style%20soft%20lighting%20transparent%20background?width=400&height=400&nologo=true" alt="AI Companion" class="character-img" id="charImg">
+    </div>
+
+    <!-- Story Modal -->
+    <div class="modal-overlay" id="storyModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="story.closeModal()">&times;</button>
+            <h2 id="modalTitle" style="margin-bottom: 16px; font-size: 1.8rem;">Title</h2>
+            <div style="margin-bottom: 24px; color: var(--text-muted); line-height: 1.6;" id="modalSituation">
+                Situation description...
+            </div>
+            <div style="background: rgba(99, 102, 241, 0.1); padding: 20px; border-radius: 12px; border-left: 4px solid #6366f1;">
+                <strong style="color: #6366f1;" data-i18n="modal_lesson">Moral Lesson:</strong>
+                <p id="modalLesson" style="margin-top: 8px;">Lesson text...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * ==========================================
+         * ETHOSAI CORE ARCHITECTURE
+         * ==========================================
+         * Modules:
+         * 1. Config & State
+         * 2. i18n (Internationalization)
+         * 3. UI Manager (Theme, Router, DOM)
+         * 4. Character Engine (Visuals, Animations)
+         * 5. Chat Engine (Logic, API Simulation)
+         * 6. Dashboard Engine (Charts, Stats)
+         * 7. Story Engine (Content, Modal)
+         * 8. App Initialization
+         */
+
+        // --- 1. CONFIG & STATE ---
+        const CONFIG = {
+            API_ENDPOINT: "https://api.ethosai.mock/v1/analyze", // Placeholder
+            DEFAULT_LANG: "en",
+            SUPPORTED_LANGS: [
+                "en", "vi", "fr", "de", "es", "zh", "ja", "ko", "th", "id", 
+                "ru", "ar", "hi", "it", "pt", "nl", "tr", "pl", "sv", "fi", 
+                "no", "da", "cs", "el", "he", "ro", "hu", "uk", "ms", "tl", 
+                "bn", "ta", "ur"
+            ]
+        };
+
+        const STATE = {
+            lang: localStorage.getItem('ethos_lang') || CONFIG.DEFAULT_LANG,
+            theme: localStorage.getItem('ethos_theme') || 'light',
+            chatHistory: [],
+            stats: {
+                sessions: 12,
+                avgScore: 8.4,
+                streak: 5
+            }
+        };
+
+        // --- 2. I18N SYSTEM ---
+        const I18N = {
+            dictionaries: {
+                en: {
+                    nav_home: "Home", nav_chat: "Chat", nav_story: "Stories", nav_dashboard: "Dashboard",
+                    hero_title: "Master Digital Empathy & Ethics",
+                    hero_subtitle: "An AI-powered companion to help you navigate online conflicts, improve emotional intelligence, and communicate with respect.",
+                    btn_start: "Start Training",
+                    feat_ai_title: "AI Analysis", feat_ai_desc: "Real-time feedback on your sentiment and moral alignment.",
+                    feat_voice_title: "Voice Mode", feat_voice_desc: "Practice tone and inflection with speech-to-text integration.",
+                    feat_story_title: "Story Scenarios", feat_story_desc: "Interactive scenarios about cyberbullying and conflict.",
+                    score_emotion: "Emotion", score_sentiment: "Sentiment", score_comm: "Communication", score_moral: "Moral Align", score_risk: "Risk Level",
+                    feedback_title: "AI Insight",
+                    story_title: "Ethical Scenarios",
+                    dash_title: "Your Progress", dash_sessions: "Total Sessions", dash_avg: "Avg Score", dash_streak: "Day Streak",
+                    modal_lesson: "Moral Lesson:",
+                    char_greeting: "Hello! I'm Aura. How can I help you today?",
+                    char_thinking: "Analyzing...",
+                    char_happy: "Great job!",
+                    char_concern: "Let's be careful.",
+                    char_serious: "This is important."
+                },
+                vi: {
+                    nav_home: "Trang chủ", nav_chat: "Trò chuyện", nav_story: "Câu chuyện", nav_dashboard: "Bảng điều khiển",
+                    hero_title: "Làm chủ Sự đồng cảm & Đạo đức Số",
+                    hero_subtitle: "Người bạn đồng hành AI giúp bạn giải quyết xung đột trực tuyến, cải thiện trí tuệ cảm xúc và giao tiếp tôn trọng.",
+                    btn_start: "Bắt đầu Huấn luyện",
+                    feat_ai_title: "Phân tích AI", feat_ai_desc: "Phản hồi thời gian thực về cảm xúc và sự liên kết đạo đức của bạn.",
+                    feat_voice_title: "Chế độ Giọng nói", feat_voice_desc: "Luyện tập ngữ điệu và giọng nói với tích hợp chuyển văn bản thành giọng nói.",
+                    feat_story_title: "Kịch bản", feat_story_desc: "Các kịch bản tương tác về bắt nạt trên mạng và xung đột.",
+                    score_emotion: "Cảm xúc", score_sentiment: "Cảm xúc", score_comm: "Giao tiếp", score_moral: "Đạo đức", score_risk: "Mức độ Rủi ro",
+                    feedback_title: "Góc nhìn AI",
+                    story_title: "Kịch bản Đạo đức",
+                    dash_title: "Tiến trình của bạn", dash_sessions: "Tổng phiên", dash_avg: "Điểm trung bình", dash_streak: "Chuỗi ngày",
+                    modal_lesson: "Bài học Đạo đức:",
+                    char_greeting: "Xin chào! Tôi là Aura. Tôi có thể giúp gì cho bạn?",
+                    char_thinking: "Đang phân tích...",
+                    char_happy: "Làm tốt lắm!",
+                    char_concern: "Hãy cẩn thận nhé.",
+                    char_serious: "Điều này rất quan trọng."
+                }
+                // Note: In a real app, all 32 languages would be populated here. 
+                // For brevity in this single file, we simulate fallback for others.
+            },
+            
+            t(key) {
+                const dict = this.dictionaries[STATE.lang] || this.dictionaries['en'];
+                return dict[key] || this.dictionaries['en'][key] || key;
+            },
+
+            init() {
+                // Populate selector
+                const select = document.getElementById('langSelector');
+                CONFIG.SUPPORTED_LANGS.forEach(code => {
+                    const opt = document.createElement('option');
+                    opt.value = code;
+                    opt.textContent = code.toUpperCase();
+                    if(code === STATE.lang) opt.selected = true;
+                    select.appendChild(opt);
+                });
+                this.translateUI();
+            },
+
+            translateUI() {
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    el.textContent = this.t(key);
+                });
+                // Update placeholders
+                const input = document.getElementById('chatInput');
+                if(input) input.placeholder = STATE.lang === 'vi' ? "Nhập tin nhắn..." : "Type a message...";
+            }
+        };
+
+        // --- 3. UI MANAGER ---
+        const UI = {
+            init() {
+                this.applyTheme();
+                this.setupListeners();
+            },
+
+            applyTheme() {
+                document.documentElement.setAttribute('data-theme', STATE.theme);
+            },
+
+            toggleTheme() {
+                STATE.theme = STATE.theme === 'light' ? 'dark' : 'light';
+                localStorage.setItem('ethos_theme', STATE.theme);
+                this.applyTheme();
+            },
+
+            setupListeners() {
+                // Global click outside modal
+                document.addEventListener('click', (e) => {
+                    const modal = document.getElementById('storyModal');
+                    if (e.target === modal) story.closeModal();
+                });
+            },
+
+            router(pageId) {
+                // Update Nav
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                const activeNav = document.querySelector(`.nav-item[onclick="app.router('${pageId}')"]`);
+                if(activeNav) activeNav.classList.add('active');
+
+                // Update Page
+                document.querySelectorAll('.page-content').forEach(el => {
+                    el.classList.remove('active');
+                    setTimeout(() => {
+                        if(!el.classList.contains('active')) el.style.display = 'none';
+                    }, 400);
+                });
+
+                const target = document.getElementById(`page-${pageId}`);
+                target.style.display = 'block';
+                // Small delay to allow display:block to render before opacity transition
+                setTimeout(() => target.classList.add('active'), 50);
+
+                if(pageId === 'dashboard') dashboard.init();
+                if(pageId === 'chat') chat.scrollToBottom();
+            }
+        };
+
+        // --- 4. CHARACTER ENGINE ---
+        const CHARACTER = {
+            img: document.getElementById('charImg'),
+            bubble: document.getElementById('charBubble'),
+            container: document.getElementById('characterContainer'),
+
+            updateState(riskLevel) {
+                // Remove old classes
+                this.img.classList.remove('char-idle', 'char-happy', 'char-concern', 'char-serious');
+                
+                let newClass = 'char-idle';
+                let text = I18N.t('char_greeting');
+                let imgUrl = "https://image.pollinations.ai/prompt/cute%20friendly%203d%20robot%20girl%20companion%20character%20blue%20and%20white%20color%20scheme%20educational%20style%20soft%20lighting%20transparent%20background?width=400&height=400&nologo=true";
+
+                if (riskLevel === 'low') {
+                    newClass = 'char-happy';
+                    text = I18N.t('char_happy');
+                    // Happy image generation prompt variation could go here
+                } else if (riskLevel === 'medium') {
+                    newClass = 'char-concern';
+                    text = I18N.t('char_concern');
+                } else if (riskLevel === 'high') {
+                    newClass = 'char-serious';
+                    text = I18N.t('char_serious');
+                }
+
+                this.img.classList.add(newClass);
+                this.showBubble(text);
+                
+                // Dynamic Image Swap based on state (Mocking Live2D states)
+                // In production, this would swap Live2D expressions
+                if(riskLevel === 'high') {
+                     this.img.src = "https://image.pollinations.ai/prompt/cute%20serious%203d%20robot%20girl%20companion%20character%20red%20tint%20educational%20style%20transparent%20background?width=400&height=400&nologo=true";
+                } else {
+                     this.img.src = "https://image.pollinations.ai/prompt/cute%20friendly%203d%20robot%20girl%20companion%20character%20blue%20and%20white%20color%20scheme%20educational%20style%20soft%20lighting%20transparent%20background?width=400&height=400&nologo=true";
+                }
+            },
+
+            showBubble(text) {
+                this.bubble.textContent = text;
+                this.bubble.classList.add('show');
+                setTimeout(() => {
+                    this.bubble.classList.remove('show');
+                }, 3000);
+            },
+
+            setThinking(isThinking) {
+                if(isThinking) {
+                    this.showBubble(I18N.t('char_thinking'));
+                    this.img.style.filter = "grayscale(0.5)";
+                } else {
+                    this.img.style.filter = "none";
+                }
+            }
+        };
+
+        // --- 5. CHAT ENGINE ---
+        const chat = {
+            messagesEl: document.getElementById('chatMessages'),
+            inputEl: document.getElementById('chatInput'),
+            
+            init() {
+                if(this.messagesEl.children.length === 0) {
+                    this.addMessage('ai', I18N.t('char_greeting'));
+                }
+            },
+
+            handleEnter(e) {
+                if(e.key === 'Enter') this.sendMessage();
+            },
+
+            async sendMessage() {
+                const text = this.inputEl.value.trim();
+                if(!text) return;
+
+                // 1. Render User Message
+                this.addMessage('user', text);
+                this.inputEl.value = '';
+                this.scrollToBottom();
+
+                // 2. Show Loading State
+                const loadingId = this.showLoading();
+                CHARACTER.setThinking(true);
+
+                // 3. Mock API Call
+                try {
+                    const response = await this.mockApiCall(text);
+                    
+                    // Remove loading
+                    document.getElementById(loadingId).remove();
+                    
+                    // 4. Render AI Response
+                    this.addMessage('ai', response.educational_feedback);
+                    
+                    // 5. Update Analysis Panel
+                    dashboard.updateScores(response);
+                    CHARACTER.updateState(response.risk_level);
+                    
+                    // 6. Update Stats
+                    STATE.stats.sessions++;
+                    document.getElementById('statSessions').textContent = STATE.stats.sessions;
+
+                } catch (err) {
+                    console.error(err);
+                    document.getElementById(loadingId).remove();
+                    this.addMessage('ai', "Error connecting to AI service.");
+                }
+            },
+
+            addMessage(role, text) {
+                const row = document.createElement('div');
+                row.className = `message-row ${role}`;
+                
+                const bubble = document.createElement('div');
+                bubble.className = 'message-bubble';
+                bubble.textContent = text;
+                
+                row.appendChild(bubble);
+                this.messagesEl.appendChild(row);
+                this.scrollToBottom();
+            },
+
+            showLoading() {
+                const id = 'loading-' + Date.now();
+                const row = document.createElement('div');
+                row.className = 'message-row ai';
+                row.id = id;
+                row.innerHTML = `
+                    <div class="typing-indicator">
+                        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                    </div>
+                `;
+                this.messagesEl.appendChild(row);
+                this.scrollToBottom();
+                return id;
+            },
+
+            scrollToBottom() {
+                this.messagesEl.scrollTop = this.messagesEl.scrollHeight;
+            },
+
+            mockApiCall(text) {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        const lower = text.toLowerCase();
+                        let risk = 'low', emotion = 'Neutral', score = 9, feedback = "Good communication.";
+                        
+                        if(lower.includes('hate') || lower.includes('stupid')) {
+                            risk = 'high'; emotion = 'Anger'; score = 2; feedback = "This language is harmful. Try expressing frustration without attacking.";
+                        } else if(lower.includes('sad') || lower.includes('cry')) {
+                            risk = 'medium'; emotion = 'Sadness'; score = 6; feedback = "It's okay to feel sad. Consider talking to a friend.";
+                        }
+
+                        resolve({
+                            emotion_type: emotion,
+                            sentiment_score: risk === 'high' ? -0.8 : 0.5,
+                            communication_score: score,
+                            moral_alignment_score: score,
+                            risk_level: risk,
+                            educational_feedback: feedback,
+                            recommended_expression: "I feel... because...",
+                            moral_lesson_topic: "Respect"
+                        });
+                    }, 1500);
+                });
+            }
+        };
+
+        // --- 6. DASHBOARD ENGINE ---
+        const dashboard = {
+            charts: {},
+            
+            init() {
+                this.renderStats();
+                this.renderCharts();
+            },
+
+            renderStats() {
+                // Animate counters
+                this.animateValue("statSessions", STATE.stats.sessions);
+                this.animateValue("statAvg", STATE.stats.avgScore);
+                this.animateValue("statStreak", STATE.stats.streak);
+            },
+
+            animateValue(id, end) {
+                const obj = document.getElementById(id);
+                let start = 0;
+                const duration = 1000;
+                const startTime = performance.now();
+
+                const step = (currentTime) => {
+                    const progress = Math.min((currentTime - startTime) / duration, 1);
+                    obj.innerHTML = (progress * end).toFixed(id === 'statAvg' ? 1 : 0);
+                    if (progress < 1) requestAnimationFrame(step);
+                };
+                requestAnimationFrame(step);
+            },
+
+            updateScores(data) {
+                // Update DOM elements in Chat Panel
+                document.getElementById('valEmotion').textContent = data.emotion_type;
+                document.getElementById('valSentiment').textContent = data.sentiment_score.toFixed(1);
+                document.getElementById('valComm').textContent = data.communication_score + "/10";
+                document.getElementById('valMoral').textContent = data.moral_alignment_score + "/10";
+                
+                const riskEl = document.getElementById('valRisk');
+                riskEl.textContent = data.risk_level.toUpperCase();
+                
+                // Style Risk Card
+                const riskCard = document.getElementById('cardRisk');
+                riskCard.className = `score-card ${data.risk_level}`;
+
+                // Update Feedback Text
+                document.getElementById('feedbackText').textContent = data.educational_feedback;
+            },
+
+            renderCharts() {
+                const ctxProgress = document.getElementById('progressChart').getContext('2d');
+                const ctxRadar = document.getElementById('radarChart').getContext('2d');
+
+                if(this.charts.progress) this.charts.progress.destroy();
+                if(this.charts.radar) this.charts.radar.destroy();
+
+                // Line Chart
+                this.charts.progress = new Chart(ctxProgress, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Communication Score',
+                            data: [6.5, 7.2, 6.8, 8.5, 8.2, 9.0, 8.8],
+                            borderColor: '#6366f1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, max: 10 } }
+                    }
+                });
+
+                // Radar Chart
+                this.charts.radar = new Chart(ctxRadar, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Empathy', 'Clarity', 'Respect', 'Logic', 'Tone'],
+                        datasets: [{
+                            label: 'Skills',
+                            data: [8, 7, 9, 6, 8],
+                            backgroundColor: 'rgba(168, 85, 247, 0.2)',
+                            borderColor: '#a855f7',
+                            pointBackgroundColor: '#a855f7'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { r: { beginAtZero: true, max: 10 } }
+                    }
+                });
+            }
+        };
+
+        // --- 7. STORY ENGINE ---
+        const story = {
+            data: [
+                {
+                    title: "The Group Chat Exclusion",
+                    category: "Cyberbullying",
+                    situation: "You notice your friends created a group chat without you, and they are posting screenshots of inside jokes you don't understand.",
+                    lesson: "Exclusion can be as hurtful as direct insults. It's important to communicate feelings of loneliness rather than reacting with anger."
+                },
+                {
+                    title: "The Misunderstood Sarcasm",
+                    category: "Misunderstanding",
+                    situation: "You made a joke in a public comment section, but someone took it seriously and called you out aggressively.",
+                    lesson: "Text lacks tone. When conflicts arise online, assume positive intent first and clarify your meaning calmly."
+                },
+                {
+                    title: "Exam Stress Venting",
+                    category: "Academic Stress",
+                    situation: "You are overwhelmed with finals and tempted to post a rant about how 'useless' the teachers are.",
+                    lesson: "Venting is natural, but public shaming damages relationships. Seek private support channels instead."
+                },
+                {
+                    title: "Friendship Conflict",
+                    category: "Friendship",
+                    situation: "Your best friend posted a photo with someone you had a fight with last week.",
+                    lesson: "Social media highlights can be misleading. Address conflicts directly with friends rather than guessing through posts."
+                }
+            ],
+
+            init() {
+                const grid = document.getElementById('storyGrid');
+                grid.innerHTML = this.data.map((s, i) => `
+                    <div class="story-card" onclick="story.openModal(${i})">
+                        <img src="https://image.pollinations.ai/prompt/illustration%20of%20${s.category.replace(' ', '%20')}%20scenario%20digital%20art%20soft%20colors?width=400&height=200&nologo=true" class="story-img" alt="${s.category}">
+                        <div class="story-body">
+                            <span class="story-tag">${s.category}</span>
+                            <h3 style="margin-top: 10px; font-size: 1.1rem;">${s.title}</h3>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            openModal(index) {
+                const s = this.data[index];
+                document.getElementById('modalTitle').textContent = s.title;
+                document.getElementById('modalSituation').textContent = s.situation;
+                document.getElementById('modalLesson').textContent = s.lesson;
+                document.getElementById('storyModal').classList.add('open');
+            },
+
+            closeModal() {
+                document.getElementById('storyModal').classList.remove('open');
+            }
+        };
+
+        // --- 8. APP INITIALIZATION ---
+        const app = {
+            init() {
+                I18N.init();
+                UI.init();
+                story.init();
+                chat.init();
+                
+                // Initial Character Greeting
+                setTimeout(() => {
+                    CHARACTER.showBubble(I18N.t('char_greeting'));
+                }, 1000);
+            },
+
+            router: (page) => UI.router(page),
+            setLanguage: (lang) => {
+                STATE.lang = lang;
+                localStorage.setItem('ethos_lang', lang);
+                I18N.translateUI();
+                CHARACTER.showBubble("Language changed to " + lang.toUpperCase());
+            },
+            toggleTheme: () => UI.toggleTheme()
+        };
+
+        // Start App
+        window.addEventListener('DOMContentLoaded', () => app.init());
+
+    </script>
+</body>
+</html>
+
